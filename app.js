@@ -1101,16 +1101,16 @@ class FamilyTaskDashboard {
                     <textarea id="task-description" name="description" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="task-badge">Badge:</label>
+                    <label for="task-badge">Badge (at least one of Badge or Score required):</label>
                     <select id="task-badge" name="badge_id">
-                        <option value="">Select a badge (optional)</option>
+                        <option value="">Select a badge</option>
                         ${badgeOptions}
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="task-score">Score:</label>
+                    <label for="task-score">Score (at least one of Badge or Score required):</label>
                     <select id="task-score" name="score_id">
-                        <option value="">Select score points (optional)</option>
+                        <option value="">Select score points</option>
                         ${scoreOptions}
                     </select>
                 </div>
@@ -1188,16 +1188,16 @@ class FamilyTaskDashboard {
                     <textarea id="task-description" name="description" required>${task.description}</textarea>
                 </div>
                 <div class="form-group">
-                    <label for="task-badge">Badge:</label>
+                    <label for="task-badge">Badge (at least one of Badge or Score required):</label>
                     <select id="task-badge" name="badge_id">
-                        <option value="">Select a badge (optional)</option>
+                        <option value="">Select a badge</option>
                         ${badgeOptions}
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="task-score">Score:</label>
+                    <label for="task-score">Score (at least one of Badge or Score required):</label>
                     <select id="task-score" name="score_id">
-                        <option value="">Select score points (optional)</option>
+                        <option value="">Select score points</option>
                         ${scoreOptions}
                     </select>
                 </div>
@@ -1338,7 +1338,7 @@ class FamilyTaskDashboard {
           asset_type_id: parseInt(formData.get("asset_type_id")),
           title: formData.get("title"),
           description: formData.get("description"),
-          score_id: selectedScores.length > 0 ? selectedScores[0] : null,
+          score_id: null, // No longer using single score_id since we associate via badge_id
           icon_url: formData.get("icon_url"),
           created_at: new Date().toISOString(),
         };
