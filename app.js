@@ -1338,7 +1338,7 @@ class FamilyTaskDashboard {
           asset_type_id: parseInt(formData.get("asset_type_id")),
           title: formData.get("title"),
           description: formData.get("description"),
-          score_id: null, // No longer using single score_id since we associate via badge_id
+          score_id: null, // Kept for backwards compatibility, but associations managed via badge_id in Score objects
           icon_url: formData.get("icon_url"),
           created_at: new Date().toISOString(),
         };
