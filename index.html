@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Family Task Management Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Sidebar Navigation -->
+      <nav class="sidebar">
+        <div class="sidebar-header">
+          <h2><i class="fas fa-home"></i> Family Dashboard</h2>
+        </div>
+        <ul class="nav-menu">
+          <li class="nav-item active" data-section="dashboard">
+            <i class="fas fa-chart-line"></i> Dashboard
+          </li>
+          <li class="nav-item" data-section="families">
+            <i class="fas fa-users"></i> Families
+          </li>
+          <li class="nav-item" data-section="tasks">
+            <i class="fas fa-tasks"></i> Tasks
+          </li>
+          <li class="nav-item" data-section="badges">
+            <i class="fas fa-medal"></i> Badges
+          </li>
+          <li class="nav-item" data-section="scores">
+            <i class="fas fa-star"></i> Scores
+          </li>
+          <li class="nav-item" data-section="levels">
+            <i class="fas fa-layer-group"></i> Levels
+          </li>
+          <li class="nav-item" data-section="rewards">
+            <i class="fas fa-gift"></i> Rewards
+          </li>
+          <li class="nav-item" data-section="asset-types">
+            <i class="fas fa-cog"></i> Asset Types
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Dashboard Overview -->
+        <section id="dashboard" class="content-section active">
+          <header class="content-header">
+            <h1>Dashboard Overview</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="refreshData()">
+                <i class="fas fa-sync"></i> Refresh
+              </button>
+            </div>
+          </header>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="total-families">0</h3>
+                <p>Total Families</p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-tasks"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="total-tasks">0</h3>
+                <p>Total Tasks</p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="completed-tasks">0</h3>
+                <p>Completed Tasks</p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-medal"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="total-badges">0</h3>
+                <p>Total Badges</p>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-star"></i>
+              </div>
+              <div class="stat-info">
+                <h3 id="total-scores">0</h3>
+                <p>Total Scores</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Family Leaderboard -->
+          <div class="card">
+            <div class="card-header">
+              <h2>Family Leaderboard</h2>
+            </div>
+            <div class="card-body">
+              <div id="family-leaderboard" class="leaderboard">
+                <!-- Dynamic content -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activities -->
+          <div class="card">
+            <div class="card-header">
+              <h2>Recent Activities</h2>
+            </div>
+            <div class="card-body">
+              <div id="recent-activities" class="activity-list">
+                <!-- Dynamic content -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Families Section -->
+        <section id="families" class="content-section">
+          <header class="content-header">
+            <h1>Family Management</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="showAddFamilyModal()">
+                <i class="fas fa-plus"></i> Add Family
+              </button>
+            </div>
+          </header>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="table-container">
+                <table id="families-table" class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Total Score</th>
+                      <th>Current Level</th>
+                      <th>Tasks & Badges</th>
+                      <th>Created</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Dynamic content -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tasks Section -->
+        <section id="tasks" class="content-section">
+          <header class="content-header">
+            <h1>Task Management</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="showAddTaskModal()">
+                <i class="fas fa-plus"></i> Add Task
+              </button>
+            </div>
+          </header>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="table-container">
+                <table id="tasks-table" class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Title</th>
+                      <th>Description</th>
+                      <th>Score Points</th>
+                      <th>Badge</th>
+                      <th>Created</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Dynamic content -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Badges Section -->
+        <section id="badges" class="content-section">
+          <header class="content-header">
+            <h1>Badge Management</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="showAddBadgeModal()">
+                <i class="fas fa-plus"></i> Add Badge
+              </button>
+            </div>
+          </header>
+
+          <div id="badges-grid" class="badges-grid">
+            <!-- Dynamic content -->
+          </div>
+        </section>
+
+        <!-- Scores Section -->
+        <section id="scores" class="content-section">
+          <header class="content-header">
+            <h1>Score Management</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="showAddScoreModal()">
+                <i class="fas fa-plus"></i> Add Score
+              </button>
+            </div>
+          </header>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="table-container">
+                <table id="scores-table" class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Asset Type</th>
+                      <th>Point Value</th>
+                      <th>Associated Badge</th>
+                      <th>Tasks Using This Score</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Dynamic content -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Levels Section -->
+        <section id="levels" class="content-section">
+          <header class="content-header">
+            <h1>Level Management</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="showAddLevelModal()">
+                <i class="fas fa-plus"></i> Add Level
+              </button>
+            </div>
+          </header>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="table-container">
+                <table id="levels-table" class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Asset Type</th>
+                      <th>Level Number</th>
+                      <th>Name</th>
+                      <th>Required Points</th>
+                      <th>Required Badges</th>
+                      <th>Created</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Dynamic content -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Rewards Section -->
+        <section id="rewards" class="content-section">
+          <header class="content-header">
+            <h1>Rewards Management</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="showAddRewardModal()">
+                <i class="fas fa-plus"></i> Add Reward
+              </button>
+            </div>
+          </header>
+
+          <div id="rewards-grid" class="rewards-grid">
+            <!-- Dynamic content -->
+          </div>
+        </section>
+
+        <!-- Asset Types Section -->
+        <section id="asset-types" class="content-section">
+          <header class="content-header">
+            <h1>Asset Type Management</h1>
+            <div class="header-actions">
+              <button class="btn btn-primary" onclick="showAddAssetTypeModal()">
+                <i class="fas fa-plus"></i> Add Asset Type
+              </button>
+            </div>
+          </header>
+
+          <div class="card">
+            <div class="card-body">
+              <div class="table-container">
+                <table id="asset-types-table" class="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Levels</th>
+                      <th>Badges</th>
+                      <th>Created</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Dynamic content -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay">
+      <div id="modal" class="modal">
+        <div class="modal-header">
+          <h3 id="modal-title">Modal Title</h3>
+          <button class="modal-close" onclick="closeModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="modal-body">
+          <!-- Dynamic content -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" id="modal-save-btn">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Assignment Modal -->
+    <div id="task-assignment-modal" class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Assign Task to Family</h3>
+          <button class="modal-close" onclick="closeTaskAssignmentModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="task-assignment-form">
+            <div class="form-group">
+              <label for="assignment-family">Family:</label>
+              <select id="assignment-family" name="family_id" required>
+                <option value="">Select a family</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="assignment-task">Task:</label>
+              <select id="assignment-task" name="task_id" required>
+                <option value="">Select a task</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-secondary"
+            onclick="closeTaskAssignmentModal()"
+          >
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="assignTask()">
+            Assign Task
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+      <div class="notification-content">
+        <span id="notification-message"></span>
+        <button onclick="closeNotification()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
