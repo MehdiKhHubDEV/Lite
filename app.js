@@ -1103,16 +1103,19 @@ class FamilyTaskDashboard {
                 <div class="form-group">
                     <label for="task-badge">Badge:</label>
                     <select id="task-badge" name="badge_id">
-                        <option value="">Select a badge</option>
+                        <option value="">Select a badge (optional)</option>
                         ${badgeOptions}
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="task-score">Score:</label>
-                    <select id="task-score" name="score_id" required>
-                        <option value="">Select score points</option>
+                    <select id="task-score" name="score_id">
+                        <option value="">Select score points (optional)</option>
                         ${scoreOptions}
                     </select>
+                </div>
+                <div id="task-validation-error" class="validation-error" style="display: none; color: #dc3545; margin-top: 10px; padding: 10px; background: #f8d7da; border-radius: 4px;">
+                    <i class="fas fa-exclamation-circle"></i> At least one of Badge or Score must be selected.
                 </div>
             </form>
         `;
@@ -1120,14 +1123,25 @@ class FamilyTaskDashboard {
     this.showModal("Add New Task", content, () => {
       const form = document.getElementById("task-form");
       const formData = new FormData(form);
+      const badgeId = parseInt(formData.get("badge_id")) || null;
+      const scoreId = parseInt(formData.get("score_id")) || null;
+      const errorDiv = document.getElementById("task-validation-error");
+
+      // Custom validation: at least one of badge_id or score_id must be non-null
+      if (!badgeId && !scoreId) {
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      errorDiv.style.display = "none";
 
       if (form.checkValidity()) {
         const newTask = {
           id: this.getNextId("tasks"),
           title: formData.get("title"),
           description: formData.get("description"),
-          badge_id: parseInt(formData.get("badge_id")) || null,
-          score_id: parseInt(formData.get("score_id")),
+          badge_id: badgeId,
+          score_id: scoreId,
           created_at: new Date().toISOString(),
         };
 
@@ -1176,16 +1190,19 @@ class FamilyTaskDashboard {
                 <div class="form-group">
                     <label for="task-badge">Badge:</label>
                     <select id="task-badge" name="badge_id">
-                        <option value="">Select a badge</option>
+                        <option value="">Select a badge (optional)</option>
                         ${badgeOptions}
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="task-score">Score:</label>
-                    <select id="task-score" name="score_id" required>
-                        <option value="">Select score points</option>
+                    <select id="task-score" name="score_id">
+                        <option value="">Select score points (optional)</option>
                         ${scoreOptions}
                     </select>
+                </div>
+                <div id="task-validation-error" class="validation-error" style="display: none; color: #dc3545; margin-top: 10px; padding: 10px; background: #f8d7da; border-radius: 4px;">
+                    <i class="fas fa-exclamation-circle"></i> At least one of Badge or Score must be selected.
                 </div>
             </form>
         `;
@@ -1193,12 +1210,23 @@ class FamilyTaskDashboard {
     this.showModal("Edit Task", content, () => {
       const form = document.getElementById("task-form");
       const formData = new FormData(form);
+      const badgeId = parseInt(formData.get("badge_id")) || null;
+      const scoreId = parseInt(formData.get("score_id")) || null;
+      const errorDiv = document.getElementById("task-validation-error");
+
+      // Custom validation: at least one of badge_id or score_id must be non-null
+      if (!badgeId && !scoreId) {
+        errorDiv.style.display = "block";
+        return;
+      }
+
+      errorDiv.style.display = "none";
 
       if (form.checkValidity()) {
         task.title = formData.get("title");
         task.description = formData.get("description");
-        task.badge_id = parseInt(formData.get("badge_id")) || null;
-        task.score_id = parseInt(formData.get("score_id"));
+        task.badge_id = badgeId;
+        task.score_id = scoreId;
 
         this.saveData();
         this.renderTasks();
@@ -1233,6 +1261,16 @@ class FamilyTaskDashboard {
   showAddBadgeModal() {
     const assetTypeOptions = this.data.assetTypes
       .map((at) => `<option value="${at.id}">${at.name}</option>`)
+      .join("");
+
+    const scoreOptions = this.data.scores
+      .map(
+        (score) =>
+          `<option value="${score.id}">${score.value_point} points - ${
+            this.data.assetTypes.find((at) => at.id === score.asset_type_id)
+              ?.name || "Unknown"
+          }</option>`
+      )
       .join("");
 
     const iconOptions = [
@@ -1276,6 +1314,13 @@ class FamilyTaskDashboard {
                         ${iconOptions}
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="badge-scores">Associated Scores (hold Ctrl/Cmd to select multiple):</label>
+                    <select id="badge-scores" name="score_ids" multiple>
+                        ${scoreOptions}
+                    </select>
+                    <small class="text-muted">Select scores to associate with this badge</small>
+                </div>
             </form>
         `;
 
@@ -1284,26 +1329,30 @@ class FamilyTaskDashboard {
       const formData = new FormData(form);
 
       if (form.checkValidity()) {
-        // Create a corresponding score first
-        const newScore = {
-          id: this.getNextId("scores"),
-          asset_type_id: parseInt(formData.get("asset_type_id")),
-          value_point: 10, // Default value
-          badge_id: this.getNextId("badges"),
-        };
+        const selectedScores = Array.from(
+          document.getElementById("badge-scores").selectedOptions
+        ).map((option) => parseInt(option.value));
 
         const newBadge = {
           id: this.getNextId("badges"),
           asset_type_id: parseInt(formData.get("asset_type_id")),
           title: formData.get("title"),
           description: formData.get("description"),
-          score_id: newScore.id,
+          score_id: selectedScores.length > 0 ? selectedScores[0] : null,
           icon_url: formData.get("icon_url"),
           created_at: new Date().toISOString(),
         };
 
-        this.data.scores.push(newScore);
         this.data.badges.push(newBadge);
+
+        // Update selected scores to reference this badge
+        selectedScores.forEach((scoreId) => {
+          const score = this.data.scores.find((s) => s.id === scoreId);
+          if (score) {
+            score.badge_id = newBadge.id;
+          }
+        });
+
         this.saveData();
         this.renderBadges();
         this.updateDashboard();
@@ -1324,6 +1373,24 @@ class FamilyTaskDashboard {
             at.id === badge.asset_type_id ? "selected" : ""
           }>${at.name}</option>`
       )
+      .join("");
+
+    // Get currently associated scores
+    const associatedScores = this.data.scores.filter(
+      (s) => s.badge_id === badge.id
+    );
+    const associatedScoreIds = associatedScores.map((s) => s.id);
+
+    const scoreOptions = this.data.scores
+      .map((score) => {
+        const isSelected = associatedScoreIds.includes(score.id);
+        const assetTypeName =
+          this.data.assetTypes.find((at) => at.id === score.asset_type_id)
+            ?.name || "Unknown";
+        return `<option value="${score.id}" ${isSelected ? "selected" : ""}>${
+          score.value_point
+        } points - ${assetTypeName}</option>`;
+      })
       .join("");
 
     const iconOptions = [
@@ -1372,6 +1439,13 @@ class FamilyTaskDashboard {
                         ${iconOptions}
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="badge-scores">Associated Scores (hold Ctrl/Cmd to select multiple):</label>
+                    <select id="badge-scores" name="score_ids" multiple>
+                        ${scoreOptions}
+                    </select>
+                    <small class="text-muted">Select scores to associate with this badge</small>
+                </div>
             </form>
         `;
 
@@ -1380,10 +1454,29 @@ class FamilyTaskDashboard {
       const formData = new FormData(form);
 
       if (form.checkValidity()) {
+        const selectedScores = Array.from(
+          document.getElementById("badge-scores").selectedOptions
+        ).map((option) => parseInt(option.value));
+
         badge.asset_type_id = parseInt(formData.get("asset_type_id"));
         badge.title = formData.get("title");
         badge.description = formData.get("description");
         badge.icon_url = formData.get("icon_url");
+
+        // Update score associations: remove old associations
+        this.data.scores.forEach((score) => {
+          if (score.badge_id === badge.id) {
+            score.badge_id = null;
+          }
+        });
+
+        // Add new associations
+        selectedScores.forEach((scoreId) => {
+          const score = this.data.scores.find((s) => s.id === scoreId);
+          if (score) {
+            score.badge_id = badge.id;
+          }
+        });
 
         this.saveData();
         this.renderBadges();
